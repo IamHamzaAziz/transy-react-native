@@ -1,37 +1,67 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
+import React from 'react'
+import { Tabs } from 'expo-router'
+import { MaterialIcons } from '@expo/vector-icons'
 
-import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
-
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
-  return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
-          ),
-        }}
-      />
-    </Tabs>
-  );
+const TabsLayout = () => {
+    return (
+        <Tabs
+            screenOptions={{
+                headerShown: false,
+                tabBarStyle: {
+                    backgroundColor: '#111827',
+                    height: 60,
+                    paddingBottom: 5,
+                    borderTopWidth: 0.5,
+                    borderTopColor: '#e5e7eb',
+                },
+                tabBarActiveTintColor: '#3b82f6',
+                tabBarLabelStyle: {
+                    fontWeight: 'bold',
+                }
+            }}
+        >
+            <Tabs.Screen name="Home" options={{
+                title: 'Home',
+                tabBarIcon: ({ color }) => (
+                    <MaterialIcons
+                        name="home"
+                        size={25}
+                        color={color}
+                    />
+                )
+            }} />
+            <Tabs.Screen name="AllTransactions" options={{
+                title: 'All Transactions',
+                tabBarIcon: ({ color }) => (
+                    <MaterialIcons
+                        name="list-alt"
+                        size={25}
+                        color={color}
+                    />
+                )
+            }} />
+            <Tabs.Screen name="AddTransaction" options={{
+                title: 'Add Transaction',
+                tabBarIcon: ({ color }) => (
+                    <MaterialIcons
+                        name="add-circle"
+                        size={25}
+                        color={color}
+                    />
+                )
+            }} />
+            <Tabs.Screen name="Profile" options={{
+                title: 'Profile',
+                tabBarIcon: ({ color }) => (
+                    <MaterialIcons
+                        name="person"
+                        size={25}
+                        color={color}
+                    />
+                )
+            }} />
+        </Tabs>
+    )
 }
+
+export default TabsLayout
