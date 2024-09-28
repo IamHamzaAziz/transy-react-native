@@ -3,11 +3,10 @@ import {
     Text,
     ScrollView,
     TextInput,
-    TouchableHighlight,
     Alert,
     ActivityIndicator,
     Pressable,
-    KeyboardAvoidingView,
+    ToastAndroid,
     Platform
 } from "react-native";
 import React, { useEffect, useState } from "react";
@@ -59,14 +58,31 @@ const Login = () => {
         setLoading(true);
 
         if (!email || !password) {
-            Alert.alert("Cannot Log In", "Please fill all fields");
+            // if platform is android then show error message toast else alrt
+            if (Platform.OS === 'android') {
+                ToastAndroid.show(
+                    "Please fill all fields",
+                    ToastAndroid.SHORT
+                );
+            }
+            else {
+                Alert.alert("Cannot Log In", "Please fill all fields");
+            }
             setLoading(false);
             return;
         }
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
-            Alert.alert("Cannot Log In", "Invalid Email");
+            if (Platform.OS === 'android') {
+                ToastAndroid.show(
+                    "Invalid Email",
+                    ToastAndroid.SHORT
+                );
+            }
+            else {
+                Alert.alert("Cannot Log In", "Invalid Email");
+            }
             setLoading(false);
             return;
         }
@@ -75,7 +91,15 @@ const Login = () => {
             const user = await signInWithEmailAndPassword(auth, email, password);
             if (user) router.replace("/(tabs)/Home");
         } catch (error: any) {
-            Alert.alert("Cannot Log In", "Invalid Credentials");
+            if (Platform.OS === 'android') {
+                ToastAndroid.show(
+                    "Invalid Credentials",
+                    ToastAndroid.SHORT
+                );
+            }
+            else {
+                Alert.alert("Cannot Log In", "Invalid Credentials");
+            }
             console.log(error);
             setLoading(false);
         }
