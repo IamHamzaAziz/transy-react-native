@@ -1,4 +1,4 @@
-import { SafeAreaView, Text, ScrollView, View, ActivityIndicator, BackHandler } from 'react-native'
+import { SafeAreaView, Text, ScrollView, View, ActivityIndicator, BackHandler, RefreshControl } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { FontAwesome } from '@expo/vector-icons'
 import { onAuthStateChanged } from 'firebase/auth'
@@ -19,8 +19,12 @@ const Home = () => {
     const [totalIncome, setTotalIncome] = useState<number>(0)
     const [totalExpenses, setTotalExpenses] = useState<number>(0)
     const [totalAmount, setTotalAmount] = useState<number>(0)
+
     const [loading, setLoading] = useState<boolean>(false)
+
     const [userID, setUserID] = useState<string | null>('')
+
+    const [refreshing, setRefreshing] = useState<boolean>(false)
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -82,13 +86,27 @@ const Home = () => {
         setLoading(false)
     }
 
+    const handleRefresh = async () => {
+        setRefreshing(true)
+        await fetchStats() // Re-fetch data on refresh
+        setRefreshing(false)
+    }
+
     return (
         <SafeAreaView className='h-full bg-gray-900'>
             <ScrollView contentContainerStyle={{
                 padding: 20,
                 minHeight: '100%',
                 justifyContent: 'center'
-            }}>
+            }}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing} // Pull-to-refresh state
+                        onRefresh={handleRefresh} // Function to handle refresh
+                        tintColor="white" // Loader color
+                    />
+                }
+            >
                 {
                     loading ? (
                         <ActivityIndicator size={'large'} color={'white'} />

@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, SafeAreaView, ActivityIndicator } from 'react-native'
+import { View, Text, ScrollView, SafeAreaView, ActivityIndicator, RefreshControl } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { FontAwesome } from '@expo/vector-icons'
 import { onAuthStateChanged } from 'firebase/auth'
@@ -20,6 +20,8 @@ const AllTransactions = () => {
     const [transactions, setTransactions] = useState<Item[]>([])
 
     const [loading, setLoading] = useState(false)
+
+    const [refreshing, setRefreshing] = useState(false)
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -59,12 +61,26 @@ const AllTransactions = () => {
         }
     }
 
+    const handleRefresh = async () => {
+        setRefreshing(true)
+        await fetchTransactions() // Re-fetch the data
+        setRefreshing(false) // End the refreshing state
+    }
+
     return (
         <SafeAreaView className='bg-gray-900 h-full'>
             <ScrollView contentContainerStyle={{
                 padding: 20,
                 minHeight: '100%',
-            }}>
+            }}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing} // Pull-to-refresh state
+                        onRefresh={handleRefresh} // Function to handle refresh
+                        tintColor="white" // Loader color
+                    />
+                }
+            >
                 <Text className='mt-5 mb-10 text-3xl text-gray-200 font-bold text-center'>Your Transactions</Text>
 
                 {
