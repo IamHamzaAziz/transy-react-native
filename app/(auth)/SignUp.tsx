@@ -8,6 +8,7 @@ import {
     Alert,
     Platform,
     KeyboardAvoidingView,
+    ToastAndroid
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useFonts } from "expo-font";
@@ -63,6 +64,15 @@ const SignUp = () => {
         setLoading(true);
 
         if (!email || !password || !password2) {
+            if (Platform.OS === 'android') {
+                ToastAndroid.show(
+                    "Please fill all fields",
+                    ToastAndroid.SHORT
+                );
+                setLoading(false);
+                return;
+            }
+
             Alert.alert("Cannot Sign Up", "Please fill all fields");
             setLoading(false);
             return;
@@ -70,12 +80,30 @@ const SignUp = () => {
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
+            if (Platform.OS === 'android') {
+                ToastAndroid.show(
+                    "Invalid Email",
+                    ToastAndroid.SHORT
+                );
+                setLoading(false);
+                return;
+            }
+
             Alert.alert("Cannot Sign Up", "Invalid Email");
             setLoading(false);
             return;
         }
 
         if (password !== password2) {
+            if (Platform.OS === 'android') {
+                ToastAndroid.show(
+                    "Passwords do not match",
+                    ToastAndroid.SHORT
+                );
+                setLoading(false);
+                return;
+            }
+
             Alert.alert("Cannot Sign Up", "Passwords do not match");
             setLoading(false);
             return;
@@ -85,8 +113,18 @@ const SignUp = () => {
             const user = await createUserWithEmailAndPassword(auth, email, password);
             if (user) router.replace("/(tabs)/Home");
         } catch (error: any) {
-            Alert.alert("Cannot Sign Up", error.message);
-            console.log(error);
+            if (Platform.OS === 'android') {
+                ToastAndroid.show(
+                    "Please fill all fields",
+                    ToastAndroid.SHORT
+                );
+                setLoading(false)
+                console.log(error);
+            } else {
+                Alert.alert("Cannot Sign Up", error.message);
+                setLoading(false)
+                console.log(error);
+            }
         }
     };
 
