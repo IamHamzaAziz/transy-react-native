@@ -8,6 +8,8 @@ import {
     Pressable,
     Alert,
     ActivityIndicator,
+    ToastAndroid,
+    Platform
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
@@ -43,6 +45,15 @@ const AddTransaction = () => {
     const handleSubmit = async () => {
         setLoading(true);
         if (!title || !amount || !transactionType) {
+            if (Platform.OS === "android") {
+                ToastAndroid.show(
+                    "Please fill all fields",
+                    ToastAndroid.SHORT
+                )
+                setLoading(false)
+                return
+            }
+
             Alert.alert("Error", "Please fill in all fields");
             setLoading(false);
             return;
@@ -59,15 +70,37 @@ const AddTransaction = () => {
                 createdAt: new Date(),
             });
 
+            if (Platform.OS === "android") {
+                ToastAndroid.show(
+                    "Transaction added successfully",
+                    ToastAndroid.SHORT
+                )
+                setLoading(false)
+                setTitle("");
+                setAmount("");
+                setTransactionType("")
+                return
+            }
+
             Alert.alert("Success", "Transaction added successfully");
             setLoading(false);
             setTitle("");
             setAmount("");
             setTransactionType("");
         } catch (error) {
-            Alert.alert("Error", "Cannot add transaction");
-            setLoading(false);
-            console.error(error);
+            if (Platform.OS === "android") {
+                ToastAndroid.show(
+                    "Unable to add transaction",
+                    ToastAndroid.SHORT
+                )
+                setLoading(false)
+                console.error(error);
+            } else {
+                Alert.alert("Error", "Cannot add transaction");
+                setLoading(false);
+                console.error(error);
+            }
+
         }
     };
 
