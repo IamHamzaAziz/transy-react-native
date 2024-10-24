@@ -1,4 +1,4 @@
-# Transy
+# Transy - Transactions Tracking Mobile App
 
 This is a transactions tracking mobile application developed using React Native, Firebase and TypeScript.
 
